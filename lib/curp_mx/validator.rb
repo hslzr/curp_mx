@@ -1,3 +1,5 @@
+require 'date'
+
 module CurpMx
   class Validator
     attr_reader :errors, :raw_input
@@ -56,14 +58,22 @@ module CurpMx
 
       birth_day   = match_data[:birth_day].to_i
       birth_month = match_data[:birth_month].to_i
-      birth_year  = match_data[:birth_year].to_i
 
       if birth_day <= 0 || birth_day > 31
         @errors[:birth_day] << "Invalid birth day: '#{match_data[:birth_day]}'"
       end
 
-      if birth_month <= 0 || birth_month > 12
-        @errors[:birth_month] << "Invalid birth month: '#{match_data[:birth_month]}'"
+      if birth_month <= 0
+        @errors[:birth_month] << "birth month is lower than 1"
+      end
+
+      if birth_month >= 13
+        @errors[:birth_month] << "birth month is higher than 12"
+      end
+
+      date_str = "#{match_data[:birth_year]}-#{match_data[:birth_month]}-#{match_data[:birth_day]}"
+      unless valid_date?(date_str)
+        @errors[:birth_date] << "Invalid birth date (YYYY-mm-dd): #{date_str}"
       end
 
       return @errors.empty?
@@ -73,6 +83,10 @@ module CurpMx
 
     def name_initials
       @raw_input[0..3]&.upcase || :BACA
+    end
+
+    def valid_date?(date_str)
+      Date.valid_date? *date_string.split('-').reverse.map(&:to_i)
     end
   end
 end
