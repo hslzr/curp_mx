@@ -18,7 +18,7 @@ module CurpMx
                 (?<father_consonant>[^AEIOU])
                 (?<mother_consonant>[^AEIOU])
                 (?<name_consonant>[^AEIOU])
-                (?<homokey>[0-9]{2})\z/x.freeze
+                (?<key>[0-9]{2})\z/x.freeze
 
     # States' initials as listed in
     # Registro Nacional de Población (RENAPO)
@@ -57,7 +57,7 @@ module CurpMx
       end
 
       if ISSUES.include?(name_initials)
-        @errors[:name] << "Invalid name initials: '#{name_initials}'"
+        @errors[:name] << "Problematic name initials: '#{name_initials}'"
       end
 
       birth_day   = md[:birth_day].to_i
@@ -94,7 +94,7 @@ module CurpMx
     end
 
     def valid_date?(date_str)
-      # Example: Date.valid_date? 2020, 7, 21
+      # Inner works: Date.valid_date? 2020, 7, 21
       Date.valid_date? *date_str.split('-').map(&:to_i)
     end
   end

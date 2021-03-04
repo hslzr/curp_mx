@@ -16,14 +16,52 @@ RSpec.describe CurpMx do
       expect(CurpMx::Validator::ISSUES.length).to eq 78
     end
 
+    # Sample persona I'll be using: Guillermo del Toro
+    #
+    # TOGG641009HJCRML99
+
     describe '#valid?' do
-      context 'with valid CURP format' do
-        it 'accepts the format as valid' do
-          # For simplicity's sake, everything but the format will be wrong
-          curp = "DEGE881818HASNNN11"
-          val = CurpMx::Validator.new(curp)
-          expect(val.valid?).to be false
-          expect(val.errors).not_to include(:format)
+      context 'with invalid CURP format' do
+        subject { CurpMx::Validator.new("TOGG641309HJCRML99X") }
+        before { subject.valid? }
+
+        it 'returns false' do
+          expect(subject.errors).to have_key(:format)
+          expect(subject.errors[:format]).to include('Invalid format')
+        end
+
+        it 'stops detecting anything else beyond that point' do
+          # For this example, the birth_month is also wrong in the subject
+          expect(subject.errors).not_to have_key('birth_month')
+        end
+      end
+
+      context 'with invalid state' do
+        subject { CurpMx::Validator.new("TOGG641309HJARML99") }
+      
+        it 'rejects it when '
+      end
+
+      context 'with invalid dates' do
+        subject { CurpMx::Validator.new("TOGG641332HJCRML99") }
+        before { subject.valid? }
+
+        it 'rejects it when DAY is out of range' do
+          expect(subject.errors).to have_key(:birth_day)
+          expect(subject.errors[:birth_day]).not_to be_empty
+        end
+
+        it 'rejects it when MONTH is out of range' do
+          expect(subject.errors).to have_key(:birth_month)
+          expect(subject.errors[:birth_month]).not_to be_empty
+        end
+
+        it 'rejects it when date does not exist' do
+          # Setting subject's birth date as Feb 30th
+          sample = CurpMx::Validator.new("TOGG640230HJCRML99")
+          expect(sample.valid?).not_to be true
+          expect(sample.errors).to have_key(:birth_date)
+          expect(sample.errors[:birth_date]).not_to be_empty
         end
       end
     end
