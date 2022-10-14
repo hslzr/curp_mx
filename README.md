@@ -14,3 +14,5 @@
     }
     
 ```
+
+TODO: Just some tests. And then publish it to Rubygems.

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 RSpec.describe CurpMx do
-  it "has a version number" do
+  it 'has a version number' do
     expect(CurpMx::VERSION).not_to be nil
   end
 
@@ -22,7 +24,7 @@ RSpec.describe CurpMx do
 
     describe '#valid?' do
       context 'with invalid CURP format' do
-        subject { CurpMx::Validator.new("TOGG641309HJCRML99X") }
+        subject { CurpMx::Validator.new('TOGG641309HJCRML99X') }
         before { subject.valid? }
 
         it 'returns false' do
@@ -37,7 +39,7 @@ RSpec.describe CurpMx do
       end
 
       context 'with invalid dates' do
-        subject { CurpMx::Validator.new("TOGG641332HJCRML99") }
+        subject { CurpMx::Validator.new('TOGG641332HJCRML99') }
         before { subject.valid? }
 
         it 'rejects it when DAY is out of range' do
@@ -52,7 +54,7 @@ RSpec.describe CurpMx do
 
         it 'rejects it when date does not exist' do
           # Setting subject's birth date as Feb 30th
-          sample = CurpMx::Validator.new("TOGG640230HJCRML99")
+          sample = CurpMx::Validator.new('TOGG640230HJCRML99')
           expect(sample.valid?).not_to be true
           expect(sample.errors).to have_key(:birth_date)
           expect(sample.errors[:birth_date]).not_to be_empty

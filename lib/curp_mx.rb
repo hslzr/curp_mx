@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'date'
 
 module CurpMx
@@ -22,19 +24,19 @@ module CurpMx
 
     # States' initials as listed in
     # Registro Nacional de Población (RENAPO)
-    STATES_RENAPO = %w(AS BC BS CC CS CH CL CM DF CX DG GT GR HG JC MC MN MS
-                    NT NL OC PL QT QR SP SL SR TC TS TL VZ YN ZS).freeze
+    STATES_RENAPO = %w[AS BC BS CC CS CH CL CM DF CX DG GT GR HG JC MC MN MS
+                       NT NL OC PL QT QR SP SL SR TC TS TL VZ YN ZS].freeze
 
-    # Problematic name initials 
-    NAME_ISSUES = %w(BACA LOCO BUEI BUEY MAME CACA MAMO
-      CAGA MEAS CAGO MEON CAKA MIAR CAKO MION COGE
-      MOCO COGI MOKO COJA MULA COJE MULO COJI NACA
-      COJO NACO COLA PEDA CULO PEDO FALO PENE FETO
-      PIPI GETA PITO GUEI POPO GUEY PUTA JETA PUTO
-      JOTO QULO KACA RATA KACO ROBA KAGA ROBE KAGO
-      ROBO KAKA RUIN KAKO SENO KOGE TETA KOGI VACA
-      KOJA VAGA KOJE VAGO KOJI VAKA KOJO VUEI KOLA 
-      VUEY KULO WUEI LILO WUEY LOCA CACO MEAR).freeze
+    # Problematic name initials
+    NAME_ISSUES = %w[BACA LOCO BUEI BUEY MAME CACA MAMO
+                     CAGA MEAS CAGO MEON CAKA MIAR CAKO MION COGE
+                     MOCO COGI MOKO COJA MULA COJE MULO COJI NACA
+                     COJO NACO COLA PEDA CULO PEDO FALO PENE FETO
+                     PIPI GETA PITO GUEI POPO GUEY PUTA JETA PUTO
+                     JOTO QULO KACA RATA KACO ROBA KAGA ROBE KAGO
+                     ROBO KAKA RUIN KAKO SENO KOGE TETA KOGI VACA
+                     KOJA VAGA KOJE VAGO KOJI VAKA KOJO VUEI KOLA
+                     VUEY KULO WUEI LILO WUEY LOCA CACO MEAR].freeze
 
     def initialize(str)
       @raw_input = str
@@ -44,20 +46,15 @@ module CurpMx
     def valid?
       md = REGEX.match(@raw_input)
 
-      unless !!md
+      if md.nil?
         @errors[:format] ||= []
         @errors[:format] << 'Invalid format'
         return false
       end
 
+      @errors[:state] << "Invalid state: '#{md[:state]}'" unless STATES_RENAPO.include? md[:state]
 
-      unless STATES_RENAPO.include? md[:state]
-        @errors[:state] << "Invalid state: '#{md[:state]}'"
-      end
-
-      if NAME_ISSUES.include?(name_initials)
-        @errors[:name] << "Problematic name initials: '#{name_initials}'"
-      end
+      @errors[:name] << "Problematic name initials: '#{name_initials}'" if NAME_ISSUES.include?(name_initials)
 
       birth_day   = md[:birth_day].to_i
       birth_month = md[:birth_month].to_i
@@ -78,7 +75,7 @@ module CurpMx
         @errors[:birth_date] << "Invalid birth date (YYYY-mm-dd): #{date_str}"
       end
 
-      return @errors.empty?
+      @errors.empty?
     end
 
     private
@@ -89,7 +86,7 @@ module CurpMx
 
     def valid_date?(date_str)
       # Inner works: Date.valid_date? 2020, 7, 21
-      Date.valid_date? *date_str.split('-').map(&:to_i)
+      Date.valid_date?(*date_str.split('-').map(&:to_i))
     end
   end
 end
