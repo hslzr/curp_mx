@@ -13,7 +13,7 @@ RSpec.describe CurpMx do
     end
 
     it 'defines 78 problematic name initials' do
-      expect(CurpMx::Validator::ISSUES.length).to eq 78
+      expect(CurpMx::Validator::NAME_ISSUES.length).to eq 78
     end
 
     # Sample persona I'll be using: Guillermo del Toro
@@ -34,12 +34,6 @@ RSpec.describe CurpMx do
           # For this example, the birth_month is also wrong in the subject
           expect(subject.errors).not_to have_key('birth_month')
         end
-      end
-
-      context 'with invalid state' do
-        subject { CurpMx::Validator.new("TOGG641309HJARML99") }
-      
-        it 'rejects it when '
       end
 
       context 'with invalid dates' do

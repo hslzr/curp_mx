@@ -26,7 +26,7 @@ module CurpMx
                     NT NL OC PL QT QR SP SL SR TC TS TL VZ YN ZS).freeze
 
     # Problematic name initials 
-    ISSUES = %w(BACA LOCO BUEI BUEY MAME CACA MAMO
+    NAME_ISSUES = %w(BACA LOCO BUEI BUEY MAME CACA MAMO
       CAGA MEAS CAGO MEON CAKA MIAR CAKO MION COGE
       MOCO COGI MOKO COJA MULA COJE MULO COJI NACA
       COJO NACO COLA PEDA CULO PEDO FALO PENE FETO
@@ -42,7 +42,6 @@ module CurpMx
     end
 
     def valid?
-      # Formerly named "match_data", renamed just for line-length constraints
       md = REGEX.match(@raw_input)
 
       unless !!md
@@ -56,7 +55,7 @@ module CurpMx
         @errors[:state] << "Invalid state: '#{md[:state]}'"
       end
 
-      if ISSUES.include?(name_initials)
+      if NAME_ISSUES.include?(name_initials)
         @errors[:name] << "Problematic name initials: '#{name_initials}'"
       end
 
@@ -68,14 +67,9 @@ module CurpMx
         @errors[:birth_day] << "Invalid birth day: '#{md[:birth_day]}'"
       end
 
-      if birth_month <= 0
+      if birth_month <= 0 || birth_month > 12
         @errors[:birth_month] ||= []
-        @errors[:birth_month] << "birth month is lower than 1"
-      end
-
-      if birth_month > 12
-        @errors[:birth_month] ||= []
-        @errors[:birth_month] << "birth month is higher than 12"
+        @errors[:birth_month] << "Invalid birth month: '#{md[:birth_month]}'"
       end
 
       date_str = "#{md[:birth_year]}-#{md[:birth_month]}-#{md[:birth_day]}"
