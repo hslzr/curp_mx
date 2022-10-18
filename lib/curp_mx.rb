@@ -5,6 +5,7 @@ require 'date'
 module CurpMx
   VERSION = '0.1.0'
 
+  # Used to validate a CURPs format and a few data points in it
   class Validator
     attr_reader :errors, :raw_input
 
@@ -38,50 +39,81 @@ module CurpMx
                      KOJA VAGA KOJE VAGO KOJI VAKA KOJO VUEI KOLA
                      VUEY KULO WUEI LILO WUEY LOCA CACO MEAR].freeze
 
-    def initialize(str)
-      @raw_input = str
+    def self.valid?(curp)
+      new(curp).valid?
+    end
+
+    def initialize(curp)
+      @raw_input = curp
       @errors = {}
+
+      validate
     end
 
     def valid?
-      md = REGEX.match(@raw_input)
+      @errors.empty?
+    end
 
-      if md.nil?
+    def validate
+      @md = REGEX.match(@raw_input)
+
+      if @md.nil?
         @errors[:format] ||= []
         @errors[:format] << 'Invalid format'
         return false
       end
 
-      @errors[:state] << "Invalid state: '#{md[:state]}'" unless STATES_RENAPO.include? md[:state]
-
-      @errors[:name] << "Problematic name initials: '#{name_initials}'" if NAME_ISSUES.include?(name_initials)
-
-      birth_day   = md[:birth_day].to_i
-      birth_month = md[:birth_month].to_i
-
-      if birth_day <= 0 || birth_day > 31
-        @errors[:birth_day] ||= []
-        @errors[:birth_day] << "Invalid birth day: '#{md[:birth_day]}'"
-      end
-
-      if birth_month <= 0 || birth_month > 12
-        @errors[:birth_month] ||= []
-        @errors[:birth_month] << "Invalid birth month: '#{md[:birth_month]}'"
-      end
-
-      date_str = "#{md[:birth_year]}-#{md[:birth_month]}-#{md[:birth_day]}"
-      unless valid_date?(date_str)
-        @errors[:birth_date] ||= []
-        @errors[:birth_date] << "Invalid birth date (YYYY-mm-dd): #{date_str}"
-      end
-
-      @errors.empty?
+      validate_state
+      validate_name_initials
+      validate_birth_date
+      validate_date_exists
     end
 
     private
 
+    def validate_state
+      return if STATES_RENAPO.include? @md[:state]
+
+      @errors[:state] << "Invalid state: '#{@md[:state]}'"
+    end
+
+    def validate_name_initials
+      return unless NAME_ISSUES.include?(name_initials)
+
+      @errors[:name] << "Problematic name initials: '#{name_initials}'"
+    end
+
+    def validate_birth_date
+      validate_birth_day
+      validate_birth_month
+    end
+
+    def validate_birth_day
+      birth_day = @md[:birth_day].to_i
+      return unless birth_day <= 0 || birth_day > 31
+
+      @errors[:birth_day] ||= []
+      @errors[:birth_day] << "Invalid birth day: '#{@md[:birth_day]}'"
+    end
+
+    def validate_birth_month
+      birth_month = @md[:birth_month].to_i
+      return unless birth_month <= 0 || birth_month > 12
+
+      @errors[:birth_month] ||= []
+      @errors[:birth_month] << "Invalid birth month: '#{@md[:birth_month]}'"
+    end
+
+    def validate_date_exists
+      date_str = "#{@md[:birth_year]}-#{@md[:birth_month]}-#{@md[:birth_day]}"
+      return if valid_date?(date_str)
+
+      @errors[:birth_date] ||= []
+      @errors[:birth_date] << "Invalid birth date (YYYY-mm-dd): #{date_str}"
+    end
+
     def name_initials
-      @raw_input[0..3]&.upcase
+      [@md[:father_initial], @md[:mother_initial], @md[:name_initial]].join
     end
 
     def valid_date?(date_str)

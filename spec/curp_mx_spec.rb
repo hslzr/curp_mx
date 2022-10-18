@@ -5,10 +5,6 @@ RSpec.describe CurpMx do
     expect(CurpMx::VERSION).not_to be nil
   end
 
-  it 'declares a Validator class' do
-    expect(CurpMx::Validator).to be_a Class
-  end
-
   describe 'Validator class' do
     it 'defines 33 RENAPO states' do
       expect(CurpMx::Validator::STATES_RENAPO.length).to eq 33
@@ -22,10 +18,17 @@ RSpec.describe CurpMx do
     #
     # TOGG641009HJCRML99
 
-    describe '#valid?' do
+    describe 'self.valid?' do
+      it 'initializes and gets a boolean response' do
+        response = CurpMx::Validator.valid?('TOGG641009HJCRML99')
+
+        expect(response).to be(true)
+      end
+    end
+
+    describe '#validate' do
       context 'with invalid CURP format' do
         subject { CurpMx::Validator.new('TOGG641309HJCRML99X') }
-        before { subject.valid? }
 
         it 'returns false' do
           expect(subject.errors).to have_key(:format)
@@ -40,7 +43,6 @@ RSpec.describe CurpMx do
 
       context 'with invalid dates' do
         subject { CurpMx::Validator.new('TOGG641332HJCRML99') }
-        before { subject.valid? }
 
         it 'rejects it when DAY is out of range' do
           expect(subject.errors).to have_key(:birth_day)
