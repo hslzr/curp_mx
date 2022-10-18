@@ -1,7 +1,5 @@
 # CurpMx
 
-~~Simple~~ ~~Minimal~~ Blazing fast library to check if a mexican CURP is valid.
-
 Librería para validar CURPs. Nada complicado, es esencialmente un regex que
 regresa una lista de errores de haber algunos.
 
@@ -55,5 +53,10 @@ validator.errors
 
 | Valor | Error |
 |:--- | :---|
-| format | El formato no coincide con el de un CURP |
+| `format` | El formato no coincide con el de un CURP |
+| `state` | El ESTADO no coincide con las abreviaciones del RENAPO |
+| `problematic_name` | Las iniciales forman una palabra prohibida. (Ej. 'CACA') |
+| `birth_day` | Día de nacimiento `<= 0` o `> 31` |
+| `birth_month` | Mes de nacimiento `<= 0` o `> 12` |
+| `birth_date` | Fecha de nacimiento inexistente (Ej. `31/02/1989`) |
 

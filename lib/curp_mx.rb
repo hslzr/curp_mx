@@ -16,7 +16,7 @@ module CurpMx
                 (?<birth_year>[0-9]{2})
                 (?<birth_month>[0-1][0-9])
                 (?<birth_day>[0-3][0-9])
-                (?<genre>[HM])
+                (?<sex>[HM])
                 (?<state>[A-Z]{2})
                 (?<father_consonant>[^AEIOU])
                 (?<mother_consonant>[^AEIOU])
@@ -80,7 +80,7 @@ module CurpMx
     def validate_name_initials
       return unless NAME_ISSUES.include?(name_initials)
 
-      @errors[:name] << "Problematic name initials: '#{name_initials}'"
+      @errors[:problematic_name] << "Problematic name initials: '#{name_initials}'"
     end
 
     def validate_birth_date
