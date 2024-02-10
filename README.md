@@ -59,4 +59,3 @@ validator.errors
 | `birth_day` | Día de nacimiento `<= 0` o `> 31` |
 | `birth_month` | Mes de nacimiento `<= 0` o `> 12` |
 | `birth_date` | Fecha de nacimiento inexistente (Ej. `31/02/1989`) |
-

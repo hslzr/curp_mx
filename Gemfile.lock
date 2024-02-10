@@ -1,0 +1,14 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    parslet (2.0.0)
+
+PLATFORMS
+  arm64-darwin-23
+  ruby
+
+DEPENDENCIES
+  parslet (~> 2.0)
+
+BUNDLED WITH
+   2.5.6
