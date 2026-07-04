@@ -10,7 +10,7 @@ Sin dependencias en tiempo de ejecución (solo usa la librería estándar de Rub
 Agrega la gema a tu `Gemfile`:
 
 ```ruby
-gem "curp_mx"
+gem "CurpMX"
 ```
 
 Y luego:
@@ -22,7 +22,7 @@ bundle install
 O instálala directamente:
 
 ```bash
-gem install curp_mx
+gem install CurpMX
 ```
 
 ## Uso
