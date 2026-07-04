@@ -6,23 +6,44 @@ RSpec.describe CurpMx do
   end
 
   describe 'Validator class' do
-    it 'defines 33 RENAPO states' do
-      expect(CurpMx::Validator::STATES_RENAPO.length).to eq 33
+    it 'defines 34 RENAPO states (32 states + CDMX alias + foreign-born)' do
+      expect(CurpMx::Validator::STATES_RENAPO.length).to eq 34
+    end
+
+    it 'accepts NE (nacido en el extranjero) as a valid state' do
+      # XEXX010101 is the RENAPO placeholder prefix for foreign-born.
+      expect(CurpMx::Validator.new('XEXX010101HNEXXXA4').errors).not_to have_key(:state)
     end
 
     it 'defines 78 problematic name initials' do
       expect(CurpMx::Validator::NAME_ISSUES.length).to eq 78
     end
 
-    # Sample persona: Guillermo del Toro (fabricated check digit)
+    # Synthetic, fully valid CURP (correct check digit included).
     #
-    # TOGG641009HJCRML99
+    # BEBE900101HDFXXX07
 
     describe 'self.valid?' do
       it 'initializes and gets a boolean response' do
-        response = CurpMx::Validator.valid?('TOGG641009HJCRML99')
+        response = CurpMx::Validator.valid?('BEBE900101HDFXXX07')
 
         expect(response).to be(true)
+      end
+    end
+
+    describe 'check digit' do
+      it 'accepts a CURP with the correct check digit' do
+        expect(CurpMx::Validator.valid?('BEBE900101HDFXXX07')).to be true
+      end
+
+      it 'rejects a CURP with a wrong check digit' do
+        validator = CurpMx::Validator.new('BEBE900101HDFXXX00')
+        expect(validator.errors).to have_key(:check_digit)
+        expect(validator.errors[:check_digit]).not_to be_empty
+      end
+
+      it 'computes the RENAPO check digit for the first 17 characters' do
+        expect(CurpMx::Validator.check_digit('BEBE900101HDFXXX0')).to eq 7
       end
     end
 
@@ -88,7 +109,7 @@ RSpec.describe CurpMx do
       context 'with a post-2000 CURP (letter homoclave)' do
         # Born 2005; position 17 is a letter. Regression: the old
         # [0-9]{2} tail rejected every CURP issued from 2000 onward.
-        subject { CurpMx::Validator.new('TOGG050101HJCRMLA9') }
+        subject { CurpMx::Validator.new('TOGG050101HJCRMLA2') }
 
         it 'accepts the format' do
           expect(subject.errors).not_to have_key(:format)
@@ -101,7 +122,7 @@ RSpec.describe CurpMx do
 
       context "with sex 'X'" do
         # Non-binary marker, valid since 2023.
-        subject { CurpMx::Validator.new('TOGG641009XJCRML99') }
+        subject { CurpMx::Validator.new('TOGG641009XJCRML94') }
 
         it 'accepts it' do
           expect(subject.errors).not_to have_key(:format)

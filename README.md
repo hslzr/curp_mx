@@ -80,18 +80,19 @@ arreglo de mensajes.
 | `birth_day` | Día de nacimiento `<= 0` o `> 31` |
 | `birth_month` | Mes de nacimiento `<= 0` o `> 12` |
 | `birth_date` | Fecha de nacimiento inexistente (ej. `30/02/1989`) |
+| `check_digit` | El dígito verificador (posición 18) no coincide con el calculado |
 
 ## Notas
 
 - Se aceptan los marcadores de sexo `H`, `M` y `X`.
 - Se aceptan CURPs anteriores y posteriores al año 2000 (la homoclave puede ser
   dígito o letra).
-- El dígito verificador (posición 18) aún **no** se valida; ver la sección de
-  pendientes.
+- Se valida el dígito verificador (posición 18) con el algoritmo del RENAPO.
+  También se puede calcular por separado a partir de los primeros 17 caracteres:
 
-## Pendientes
-
-- Validar el dígito verificador contra el algoritmo del RENAPO.
+  ```ruby
+  CurpMx::Validator.check_digit("BEBE900101HDFXXX0") #=> 7
+  ```
 
 ## Desarrollo
 
@@ -99,6 +100,19 @@ arreglo de mensajes.
 bin/setup        # instala dependencias
 bundle exec rspec # corre las pruebas
 ```
+
+## Normativa
+La gema en su estado actual valida la formación del CURP de acuerdo al
+**Instructivo Normativo Para La Asignación De La Clave Única De Registro De
+Población**, publicado en el Diario Oficial de la Federación el día 18 de
+Octubre de 2021. El documento en formato PDF puede ser leído [en este
+enlace](https://www.gob.mx/cms/uploads/attachment/file/337251/Instructivo_Normativo_para_la_Asignacion_de_la_CURP.pdf)
+
+Es importante aclarar que la gema actual permite el uso de la letra `X` en el
+género del individuo a pesar de no estar dentro de la normativa; esto debido a
+un antecedente de [una CURP emitida en
+2023](https://quinto-poder.mx/orgullomx/2023/2/23/expiden-la-primera-curp-de-genero-no-binario-18792.html),
+lo que implica que más CURPs con formato similar podrían existir allá afuera.
 
 ## Licencia
 
