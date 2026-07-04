@@ -94,6 +94,57 @@ arreglo de mensajes.
   CurpMx::Validator.check_digit("BEBE900101HDFXXX0") #=> 7
   ```
 
+## Dígito verificador
+
+### Cómo se dedujo
+
+El algoritmo del dígito verificador **no aparece publicado** en el Instructivo
+Normativo: éste solo describe la posición 18 como *"un carácter asignado […] a
+través de la aplicación de un algoritmo que permite calcular y verificar la
+correcta conformación de la clave"*, sin dar la fórmula ni la tabla de valores.
+
+Por eso el algoritmo de esta gema es, en parte, **ingeniería inversa**. Se
+partió del algoritmo estándar del RENAPO que circula públicamente y se confirmó
+de forma empírica contra CURPs reales, válidas y conocidas: para cada una se
+calculó el dígito a partir de sus primeros 17 caracteres y se comparó con el
+carácter 18 real. Varias CURPs independientes coinciden, así que la confianza es
+alta, pero conviene tenerlo presente: **es la única regla de la gema que no está
+respaldada por una fuente oficial directa**, sino por verificación empírica.
+
+Sugiero ampliamente hacer validaciones con CURPs propias para corroborar que, en
+CURPs ya existentes y en circulación, este algoritmo siga siendo válido. Si tu
+CURP es detectada como no válida puedes crear un issue en este repo para refinar
+el cálculo.
+
+### Cómo funciona
+
+Dados los primeros 17 caracteres del CURP:
+
+1. **Valor de cada carácter.** Los dígitos `0`–`9` valen `0`–`9`. Las letras
+   `A`–`N` valen `10`–`23`, y las letras `O`–`Z` valen `25`–`36`.
+
+2. **Suma ponderada.** Cada valor se multiplica por un peso descendente según su
+   posición: el primer carácter por `18`, el segundo por `17`, … y el carácter
+   17 por `2`. Se suman todos los productos.
+
+3. **Complemento a 10.** El dígito verificador es `(10 - (suma mod 10)) mod 10`,
+   siempre un número del `0` al `9`.
+
+Ejemplo con `BEBE900101HDFXXX0` (17 caracteres):
+
+```
+  B  E  B  E  9  0  0  1  0  1  H  D  F  X  X  X  0
+ 11 14 11 14  9  0  0  1  0  1 17 13 15 34 34 34  0   ← valor
+×18 17 16 15 14 13 12 11 10  9  8  7  6  5  4  3  2   ← peso
+
+suma = 1693 ;  1693 mod 10 = 3 ;  (10 - 3) mod 10 = 7  →  dígito = 7
+```
+
+Por eso `BEBE900101HDFXXX07` es válido.
+
+Internamente el cálculo se hace sobre los bytes ASCII (los tres tramos de
+valores son contiguos), sin construir tablas ni objetos, para que sea rápido.
+
 ## Desarrollo
 
 ```bash
@@ -108,7 +159,7 @@ Población**, publicado en el Diario Oficial de la Federación el día 18 de
 Octubre de 2021. El documento en formato PDF puede ser leído [en este
 enlace](https://www.gob.mx/cms/uploads/attachment/file/337251/Instructivo_Normativo_para_la_Asignacion_de_la_CURP.pdf)
 
-Sin embargo, cabe aclara que **no soy abogado**, así que mis fuentes podrían no
+Sin embargo, cabe aclarar que **no soy abogado**, así que mis fuentes podrían no
 ser las más precisas. Durante mi investigación, encontré además las [REGLAS PARA
 LA EJECUCIÓN DE LOS PROCEDIMIENTOS PARA LA ASIGNACIÓN DE LA CLAVE ÚNICA DE
 POBLACIÓN](https://www.gob.mx/cms/uploads/attachment/file/960109/Reglas_para_la_Ejecucion_de_los_Procedimientos_para_la_Asignacion_de_la_CURP.pdf),
