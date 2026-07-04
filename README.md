@@ -108,7 +108,15 @@ Población**, publicado en el Diario Oficial de la Federación el día 18 de
 Octubre de 2021. El documento en formato PDF puede ser leído [en este
 enlace](https://www.gob.mx/cms/uploads/attachment/file/337251/Instructivo_Normativo_para_la_Asignacion_de_la_CURP.pdf)
 
-Es importante aclarar que la gema actual permite el uso de la letra `X` en el
+Sin embargo, cabe aclara que **no soy abogado**, así que mis fuentes podrían no
+ser las más precisas. Durante mi investigación, encontré además las [REGLAS PARA
+LA EJECUCIÓN DE LOS PROCEDIMIENTOS PARA LA ASIGNACIÓN DE LA CLAVE ÚNICA DE
+POBLACIÓN](https://www.gob.mx/cms/uploads/attachment/file/960109/Reglas_para_la_Ejecucion_de_los_Procedimientos_para_la_Asignacion_de_la_CURP.pdf),
+que si bien no contradice el documento anterior, ésta tiene ejemplos más
+precisos y un par de anexos para la validación de los datos – la lista de
+palabras altisonantes en la página 86, por ejemplo.
+
+La gema actual permite el uso de la letra `X` en el
 género del individuo a pesar de no estar dentro de la normativa; esto debido a
 un antecedente de [una CURP emitida en
 2023](https://quinto-poder.mx/orgullomx/2023/2/23/expiden-la-primera-curp-de-genero-no-binario-18792.html),
