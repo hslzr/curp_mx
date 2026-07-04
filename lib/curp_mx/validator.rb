@@ -23,23 +23,26 @@ module CurpMx
     # in that same text.
     FORMAT = /\A[A-Z]{4}\d{2}[0-1]\d[0-3]\d[HMX][A-Z]{2}[^AEIOU]{3}[0-9A-J]\d\z/.freeze
 
-    # States' initials as listed in the Registro Nacional de Población
-    # (RENAPO). Includes both DF and CX for Mexico City, and NE for
-    # people born abroad (nacido en el extranjero).
-    STATES_RENAPO = %w[AS BC BS CC CS CH CL CM DF CX DG GT GR HG JC MC MN MS
+    # Entity codes for positions 12-13, from Anexo 03 "Catálogo de
+    # Entidades Federativas para la conformación de la CURP" of the
+    # Instructivo Normativo (DOF 18-10-2021). 32 entities (Mexico City is
+    # DF; there is no CX) plus NE for people born abroad.
+    STATES_RENAPO = %w[AS BC BS CC CL CM CS CH DF DG GT GR HG JC MC MN MS
                        NT NL OC PL QT QR SP SL SR TC TS TL VZ YN ZS NE].freeze
 
     # Problematic name initials (RENAPO substitutes the 2nd letter with X
-    # when the first four letters spell one of these).
-    NAME_ISSUES = %w[BACA LOCO BUEI BUEY MAME CACA MAMO
-                     CAGA MEAS CAGO MEON CAKA MIAR CAKO MION COGE
-                     MOCO COGI MOKO COJA MULA COJE MULO COJI NACA
-                     COJO NACO COLA PEDA CULO PEDO FALO PENE FETO
-                     PIPI GETA PITO GUEI POPO GUEY PUTA JETA PUTO
-                     JOTO QULO KACA RATA KACO ROBA KAGA ROBE KAGO
-                     ROBO KAKA RUIN KAKO SENO KOGE TETA KOGI VACA
-                     KOJA VAGA KOJE VAGO KOJI VAKA KOJO VUEI KOLA
-                     VUEY KULO WUEI LILO WUEY LOCA CACO MEAR].freeze
+    # when the first four letters spell one of these). Full catalog of 82
+    # words from Anexo 01 "Catálogo de palabras altisonantes" of the
+    # Instructivo Normativo (DOF 18-10-2021).
+    NAME_ISSUES = %w[BACA BAKA BUEI BUEY CACA CACO CAGA CAGO CAKA CAKO
+                     COGE COGI COJA COJE COJI COJO COLA CULO FALO FETO
+                     GETA GUEI GUEY JETA JOTO KACA KACO KAGA KAGO KAKA
+                     KAKO KOGE KOGI KOJA KOJE KOJI KOJO KOLA KULO LILO
+                     LOCA LOCO LOKA LOKO MAME MAMO MEAR MEAS MEON MIAR
+                     MION MOCO MOKO MULA MULO NACA NACO ORIN PEDA PEDO
+                     PENE PIPI PITO POPO PUTA PUTO QULO RATA ROBA ROBE
+                     ROBO RUIN SENO TETA VACA VAGA VAGO VAKA VUEI VUEY
+                     WUEI WUEY].freeze
 
     # O(1) lookup copies of the constants above (the public constants stay
     # as readable frozen Arrays).

@@ -6,8 +6,12 @@ RSpec.describe CurpMx do
   end
 
   describe 'Validator class' do
-    it 'defines 34 RENAPO states (32 states + CDMX alias + foreign-born)' do
-      expect(CurpMx::Validator::STATES_RENAPO.length).to eq 34
+    it 'defines the 33 entity codes from Anexo 03 (32 entities + foreign-born)' do
+      expect(CurpMx::Validator::STATES_RENAPO.length).to eq 33
+      expect(CurpMx::Validator::STATES_RENAPO.uniq.length).to eq 33
+      # Mexico City is DF; CX is not an official entity code.
+      expect(CurpMx::Validator::STATES_RENAPO).to include('DF', 'NE')
+      expect(CurpMx::Validator::STATES_RENAPO).not_to include('CX')
     end
 
     it 'accepts NE (nacido en el extranjero) as a valid state' do
@@ -15,8 +19,18 @@ RSpec.describe CurpMx do
       expect(CurpMx::Validator.new('XEXX010101HNEXXXA4').errors).not_to have_key(:state)
     end
 
-    it 'defines 78 problematic name initials' do
-      expect(CurpMx::Validator::NAME_ISSUES.length).to eq 78
+    it 'defines the 82 problematic name initials from Anexo 01' do
+      expect(CurpMx::Validator::NAME_ISSUES.length).to eq 82
+      expect(CurpMx::Validator::NAME_ISSUES.uniq.length).to eq 82
+      # A few catalog entries that must be present (BAKA/ORIN were missing
+      # from the pre-verification list).
+      expect(CurpMx::Validator::NAME_ISSUES).to include('BACA', 'BAKA', 'ORIN', 'WUEY')
+    end
+
+    it 'flags a CURP whose initials spell a catalog word' do
+      # 'ORIN' — one of the entries added after verifying against Anexo 01.
+      validator = CurpMx::Validator.new('ORIN900101HDFXXX00')
+      expect(validator.errors).to have_key(:problematic_name)
     end
 
     # Synthetic, fully valid CURP (correct check digit included).
