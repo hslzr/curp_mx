@@ -45,6 +45,17 @@ RSpec.describe CurpMx do
       end
     end
 
+    describe 'normalization' do
+      it 'upcases the input before validating' do
+        expect(CurpMx::Validator.valid?('bebe900101hdfxxx07')).to be true
+      end
+
+      it 'does not raise on nil or non-string input' do
+        expect(CurpMx::Validator.valid?(nil)).to be false
+        expect(CurpMx::Validator.valid?(12_345)).to be false
+      end
+    end
+
     describe 'check digit' do
       it 'accepts a CURP with the correct check digit' do
         expect(CurpMx::Validator.valid?('BEBE900101HDFXXX07')).to be true

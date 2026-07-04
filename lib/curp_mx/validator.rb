@@ -74,7 +74,7 @@ module CurpMx
     end
 
     def initialize(curp)
-      @raw_input = curp
+      @raw_input = curp.is_a?(String) ? curp.upcase : curp
       @errors = {}
 
       validate
