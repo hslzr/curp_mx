@@ -3,6 +3,13 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.0.1] - 2026-07-04
+
+### Cambiado
+- La gema se publica bajo el nombre existente `CurpMX` (RubyGems rechaza
+  `curp_mx` por ser demasiado similar). La ruta de `require` sigue siendo
+  `curp_mx`.
+
 ## [1.0.0] - 2026-07-04
 
 Primera versión funcional y estable. `CurpMx::Validator` valida la formación de
@@ -38,4 +45,5 @@ la ejecución de los procedimientos para la asignación de la CURP.
 - El formato rechazaba todo CURP emitido a partir del año 2000 (posición 17 con
   letra).
 
+[1.0.1]: https://github.com/hslzr/curp_mx/releases/tag/v1.0.1
 [1.0.0]: https://github.com/hslzr/curp_mx/releases/tag/v1.0.0

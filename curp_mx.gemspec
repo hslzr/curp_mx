@@ -3,7 +3,7 @@
 require_relative "lib/curp_mx/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "curp_mx"
+  spec.name = "CurpMX"
   spec.version = CurpMx::VERSION
   spec.authors = ["Salazar"]
 
